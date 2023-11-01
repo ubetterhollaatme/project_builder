@@ -35,6 +35,7 @@ use Tabuna\Breadcrumbs\Trail;
 // project routes:
 
 Route::screen('data_producer_node', DataProducerNodeScreen::class)->name('builder.data_producer_node');
+Route::screen('centers', DataProducerNodeScreen::class)->name('builder.centers');
 
 // lib routes:
 

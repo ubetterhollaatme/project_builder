@@ -2,17 +2,24 @@
 
 namespace App\Orchid\Screens;
 
+use App\Http\Controllers\DataProducerNodeController;
 use App\Models\DataProducerNode;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Mail;
 use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Actions\DropDown;
+use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Quill;
+use Orchid\Screen\TD;
 use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
 use Orchid\Screen\Screen;
 
+/**
+ *
+ */
 class DataProducerNodeScreen extends Screen
 {
     /**
@@ -22,7 +29,9 @@ class DataProducerNodeScreen extends Screen
      */
     public function query(): iterable
     {
-        return [];
+        return [
+            'data_producer_nodes' => DataProducerNode::all()
+        ];
     }
 
     /**
@@ -32,7 +41,7 @@ class DataProducerNodeScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Сборщик проекта';
+        return 'Центры';
     }
 
     /**
@@ -42,7 +51,7 @@ class DataProducerNodeScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'Зарегистрируйте ваши центры приёма данных';
+        return '';
     }
 
     /**
@@ -53,7 +62,11 @@ class DataProducerNodeScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-
+            ModalToggle::make('Добавить центр')
+                ->modal('Добавление центра')
+                ->icon('full-screen')
+                ->method('addDataProducerNode')
+                ->confirm(__('Вы уверены?')),
         ];
     }
 
@@ -65,67 +78,69 @@ class DataProducerNodeScreen extends Screen
     public function layout(): iterable
     {
         return [
-            Layout::rows([
-                Input::make('name')
-                    ->title('Название центра')
-                    ->required()
-                    ->placeholder('Кащенко - Троицкий пр. д. 1')
-                    ->help('Введите название'),
+            Layout::table('data_producer_nodes', [
+                TD::make('id')->sort(),
+                TD::make('name'),
+                TD::make('email'),
+                TD::make('phone'),
+                TD::make('desc'),
+            ]),
+            Layout::modal('Добавление центра', [
+                Layout::rows([
+                    Input::make('name')
+                        ->title('Название центра')
+                        ->required()
+                        ->placeholder('Кащенко - Троицкий пр. д. 1')
+                        ->help('Введите название'),
 
-                Input::make('email')
-                    ->type('email')
-                    ->title('Получатель уведомления')
-                    ->required()
-                    ->placeholder('E-mail')
-                    ->help('Введите адрес эл. почты для отправки авторизационных
-                        данных административной панели нового центра'),
+                    Input::make('email')
+                        ->type('email')
+                        ->title('Получатель уведомления')
+                        ->required()
+                        ->placeholder('E-mail')
+                        ->help('Введите адрес эл. почты для отправки авторизационных
+                                    данных административной панели нового центра'),
 
-                Input::make('phone')
-                    ->mask('+7 (999) 999-9999')
-                    ->title('Номер телефона'),
+                    Input::make('phone')
+                        ->mask('+7 (999) 999-9999')
+                        ->title('Номер телефона')
+                        ->required()
+                        ->placeholder('+7 (999) 999-99-99')
+                        ->help('Введите контактный номер центра'),
 
-                Quill::make('desc')
-                    ->title('Описание')
-                    ->placeholder('Новый центр на Наб. реки Мойки')
-                    ->help('Добавьте описание вашего центра'),
-
-                Button::make('Зарегистрировать центр')
-                    ->icon('note')
-                    ->method('addDataProducerNode')
-                    ->confirm(__('Вы уверены?'))
+                    Quill::make('desc')
+                        ->title('Описание')
+                        ->placeholder('Новый центр на Наб. реки Мойки')
+                        ->help('Добавьте описание вашего центра'),
+                ])
             ])
+                ->applyButton('Добавить')
+                ->closeButton('Закрыть')
         ];
     }
 
     /**
-     * redirect
-     *
      * @param Request $request
-     *
+     * @param DataProducerNodeController $controller
      * @return void
      */
-    public function addDataProducerNode(Request $request)
+    public function addDataProducerNode(Request $request, DataProducerNodeController $controller)
     {
-        $request->validate([
-            'name' => 'required|min:3',
-            'desc' => 'required|min:5',
-            'email' => 'required|email|unique:data_producer_nodes',
-            'phone' => 'required|unique:data_producer_nodes',
-        ]);
-
-        $dpn = new DataProducerNode([
-            'name' => $request->post('name'),
-            'desc' => $request->post('desc'),
-            'email' => $request->post('email'),
-            'phone' => preg_replace('/\D/','', $request->post('phone')),
-        ]);
-
         try {
-            $dpn->save();
+            $dpn = $controller->create($request);
         } catch (\Throwable $e) {
             Alert::info($e->getMessage());
             return null;
         }
+
+        Alert::info("Центр #{$dpn->getAttribute('id')} успешно зарегистрирован");
+    }
+
+    /**
+     * @return void
+     */
+    public function buildProject()
+    {
         /*
         Mail::raw($request->get('content'), function (Message $message) use ($request) {
             $message->from('ubetterhollaatme@yandex.ru');
@@ -133,6 +148,6 @@ class DataProducerNodeScreen extends Screen
             $message->subject($request->get('subject'));
         });
         */
-        Alert::info("Центр #{$dpn->getAttribute('id')} успешно зарегистрирован");
+        Alert::info("Платформа запущена");
     }
 }

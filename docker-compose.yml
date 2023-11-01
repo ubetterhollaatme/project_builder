@@ -21,6 +21,8 @@ services:
         build:
             context: .
             dockerfile: docker/php/builder/Dockerfile
+        ports:
+            - "3306:3306"
         volumes:
             - ./docker/php/builder/php.ini:/usr/local/etc/php/php.ini
             - ./:/var/www/html:z

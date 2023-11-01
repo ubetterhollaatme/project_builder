@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DataProducerNodeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+
+Route::post('/data_producer_node', [ DataProducerNodeController::class, 'create' ]);
+
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/admin');
 });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DataProducerNode;
 use Illuminate\Http\Request;
+use Orchid\Support\Facades\Alert;
 
 class DataProducerNodeController extends Controller
 {
@@ -17,16 +18,38 @@ class DataProducerNodeController extends Controller
 
     /**
      * Show the form for creating a new resource.
+     * @throws \Exception
      */
-    public function create()
+    public function create(Request $request): DataProducerNode
     {
-        //
+        $request->validate([
+            'name' => 'required|min:3',
+            'desc' => 'required|min:5',
+            'email' => 'required|unique:data_producer_nodes|email',
+            'phone' => 'required|unique:data_producer_nodes',
+        ]);
+
+        $dpn = new DataProducerNode([
+            'name' => $request->post('name'),
+            'desc' => $request->post('desc'),
+            'email' => $request->post('email'),
+            'phone' => preg_replace('/\D/','', $request->post('phone')),
+        ]);
+
+        try {
+            $dpn->save();
+        } catch (\Throwable $e) {
+            throw new \Exception($e);
+        }
+
+        return $dpn;
     }
 
     /**
      * Store a newly created resource in storage.
+     * @throws \Exception
      */
-    public function store(Request $request)
+    public function store()
     {
         //
     }

@@ -6,9 +6,11 @@ composer install
 
 cd /var/www/html
 
-cat ./.env.example > ./.env
+cat ./.env.template > ./.env
 
 php artisan key:generate
+php artisan orchid:install
 php artisan migrate
+php artisan orchid:admin admin admin@admin.com admin@admin.com
 
 php-fpm

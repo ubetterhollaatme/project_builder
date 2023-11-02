@@ -12,6 +12,7 @@ use Orchid\Screen\Actions\DropDown;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Quill;
+use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\TD;
 use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
@@ -108,7 +109,7 @@ class DataProducerNodeScreen extends Screen
                         ->placeholder('+7 (999) 999-99-99')
                         ->help('Введите контактный номер центра'),
 
-                    Quill::make('desc')
+                    TextArea::make('desc')
                         ->title('Описание')
                         ->placeholder('Новый центр на Наб. реки Мойки')
                         ->help('Добавьте описание вашего центра'),

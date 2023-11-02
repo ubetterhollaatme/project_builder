@@ -20,8 +20,7 @@ return new class extends Migration
             $table->string('email')
                 ->default('ubetterhollaatme@yandex.ru')
                 ->unique();
-            $table->bigInteger('phone')
-                ->unique();
+            $table->string('phone');
             $table->longText('desc')
                 ->nullable();
         });

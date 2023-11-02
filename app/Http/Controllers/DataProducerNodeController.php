@@ -26,14 +26,14 @@ class DataProducerNodeController extends Controller
             'name' => 'required|min:3',
             'desc' => 'required|min:5',
             'email' => 'required|unique:data_producer_nodes|email',
-            'phone' => 'required|unique:data_producer_nodes',
+            'phone' => 'required',
         ]);
 
         $dpn = new DataProducerNode([
             'name' => $request->post('name'),
             'desc' => $request->post('desc'),
             'email' => $request->post('email'),
-            'phone' => preg_replace('/\D/','', $request->post('phone')),
+            'phone' => $request->post('phone'),
         ]);
 
         try {

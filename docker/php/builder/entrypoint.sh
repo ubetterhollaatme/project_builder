@@ -13,4 +13,6 @@ php artisan orchid:install
 php artisan migrate
 php artisan orchid:admin admin admin@admin.com admin@admin.com
 
+./vendor/bin/phpunit
+
 php-fpm

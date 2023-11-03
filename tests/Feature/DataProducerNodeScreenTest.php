@@ -16,24 +16,18 @@ class DataProducerNodeScreenTest extends TestCase
 {
     use ScreenTesting, CreatesApplication, DatabaseMigrations;
 
-//    /**
-//     * @test
-//     */
-//    public function a_user_can_create_data_producer_node()
-//    {
-//        $user = User::factory()->admin()->create();
-//        $response = $this->actingAs($user, 'platform')
-//            ->withSession(['banned' => false])
-//            ->post('/admin/centers/addDataProducerNode', );
-//
-//        $response->assertStatus(303);
-//        $response->assertRedirectContains('/admin/data_producer_node');
-//    }
-
     /**
      * @test
      */
     public function testDataProducerNodeScreen()
+    {
+        $this->admin_can_create_data_producer_node();
+    }
+
+    /**
+     * @return void
+     */
+    public function admin_can_create_data_producer_node()
     {
         $screen = $this->screen('builder.data_producer_node')
             ->actingAs(User::factory()->admin()->create());

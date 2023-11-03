@@ -34,22 +34,24 @@ class PlatformProvider extends OrchidServiceProvider
     public function menu(): array
     {
         return [
-            Menu::make(__('Центры'))
-                ->icon('bs.people')
+            Menu::make(__('Nodes'))
+                ->title(__('Data Registration Nodes'))
+                ->icon('bs.grid')
                 ->route('builder.centers')
                 ->permission('platform.systems.users')
                 ->divider(),
-            Menu::make(__('Сборщик'))
-                ->icon('bs.people')
+            Menu::make(__('Builder'))
+                ->title(__('Project Builder'))
+                ->icon('bs.wrench')
                 ->route('builder.data_producer_node')
                 ->permission('platform.systems.users')
                 ->divider(),
-            Menu::make(__('Пользователи'))
+            Menu::make(__('Users'))
                 ->icon('bs.people')
                 ->route('platform.systems.users')
                 ->permission('platform.systems.users')
-                ->title(__('Управление доступом')),
-            Menu::make(__('Роли'))
+                ->title(__('Permission settings')),
+            Menu::make(__('Roles'))
                 ->icon('bs.shield')
                 ->route('platform.systems.roles')
                 ->permission('platform.systems.roles')

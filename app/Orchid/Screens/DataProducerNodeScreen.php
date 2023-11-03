@@ -42,7 +42,7 @@ class DataProducerNodeScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Центры';
+        return 'Nodes';
     }
 
     /**
@@ -63,11 +63,21 @@ class DataProducerNodeScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            ModalToggle::make('Добавить центр')
-                ->modal('Добавление центра')
-                ->icon('full-screen')
+            ModalToggle::make('Create node')
+                ->modal('Node creating form')
+                ->icon('plus')
                 ->method('addDataProducerNode')
-                ->confirm(__('Вы уверены?')),
+                ->confirm(__('Are you sure?')),
+
+            Button::make('Generate nodes')
+                ->icon('grid')
+                ->method('generateNodes')
+                ->confirm(__('Are you sure?')),
+
+            Button::make('Clear nodes')
+                ->icon('trash')
+                ->method('clearNodes')
+                ->confirm(__('Are you sure?')),
         ];
     }
 
@@ -86,37 +96,37 @@ class DataProducerNodeScreen extends Screen
                 TD::make('phone'),
                 TD::make('desc'),
             ]),
-            Layout::modal('Добавление центра', [
+            Layout::modal('Node creating form', [
                 Layout::rows([
                     Input::make('name')
-                        ->title('Название центра')
+                        ->title('Node name')
                         ->required()
-                        ->placeholder('Кащенко - Троицкий пр. д. 1')
-                        ->help('Введите название'),
+                        ->placeholder('My node #1')
+                        ->help('Enter your node name'),
 
                     Input::make('email')
                         ->type('email')
-                        ->title('Получатель уведомления')
+                        ->title('Associated E-mail')
                         ->required()
                         ->placeholder('E-mail')
-                        ->help('Введите адрес эл. почты для отправки авторизационных
-                                    данных административной панели нового центра'),
+                        ->help('Enter E-mail for sending authorization data
+                            of the administrative panel of new node'),
 
                     Input::make('phone')
                         ->mask('+7 (999) 999-9999')
-                        ->title('Номер телефона')
+                        ->title('Associated Phone Number')
                         ->required()
-                        ->placeholder('+7 (999) 999-99-99')
-                        ->help('Введите контактный номер центра'),
+                        ->placeholder('+7 (999) 999-9999')
+                        ->help('Enter phone number of the node'),
 
                     TextArea::make('desc')
-                        ->title('Описание')
-                        ->placeholder('Новый центр на Наб. реки Мойки')
-                        ->help('Добавьте описание вашего центра'),
+                        ->title('Node Description')
+                        ->placeholder('My new super-mega-node')
+                        ->help('Enter description of your node'),
                 ])
             ])
-                ->applyButton('Добавить')
-                ->closeButton('Закрыть')
+                ->applyButton('Add')
+                ->closeButton('Close')
         ];
     }
 
@@ -140,6 +150,29 @@ class DataProducerNodeScreen extends Screen
     /**
      * @return void
      */
+    public function generateNodes(): void
+    {
+        DataProducerNode::factory()
+            ->count(20)
+            ->make()
+            ->each(fn ($node) => $node->save());
+
+        Alert::info("Nodes created");
+    }
+
+    /**
+     * @return void
+     */
+    public function clearNodes(): void
+    {
+        DataProducerNode::truncate();
+
+        Alert::info("Nodes cleared");
+    }
+
+    /**
+     * @return void
+     */
     public function buildProject()
     {
         /*
@@ -149,6 +182,7 @@ class DataProducerNodeScreen extends Screen
             $message->subject($request->get('subject'));
         });
         */
-        Alert::info("Платформа запущена");
+        Alert::info("Project builded, you can move in /project/ folder
+            and enter the command 'docker-compose up' to start project");
     }
 }

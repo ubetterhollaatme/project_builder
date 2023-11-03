@@ -15,4 +15,6 @@ php artisan orchid:admin admin admin@admin.com admin@admin.com
 
 ./vendor/bin/phpunit
 
+chown -R www-data:www-data /var/www
+
 php-fpm

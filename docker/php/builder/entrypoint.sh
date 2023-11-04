@@ -16,6 +16,6 @@ sudo usermod -a -G www-data root
 find /var/www/html -type f -exec chmod 644 {} \;
 find /var/www/html -type d -exec chmod 755 {} \;
 
-./vendor/bin/phpunit
+php ./vendor/bin/phpunit
 
 php-fpm

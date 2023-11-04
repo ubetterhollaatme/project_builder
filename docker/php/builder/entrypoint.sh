@@ -10,6 +10,8 @@ php artisan migrate
 php artisan orchid:admin admin admin@admin.com admin@admin.com
 
 chown -R www-data:www-data /var/www/html
+chmod -R gu+w storage
+chmod -R guo+w storage
 
 sudo usermod -a -G www-data root
 

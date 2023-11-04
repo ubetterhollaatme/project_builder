@@ -12,7 +12,7 @@ use Tests\CreatesApplication;
 use Tests\TestCase;
 use function onlyDigits;
 
-class DataProducerNodeScreenTest extends TestCase
+class NodeScreenTest extends TestCase
 {
     use ScreenTesting, CreatesApplication, DatabaseMigrations;
 

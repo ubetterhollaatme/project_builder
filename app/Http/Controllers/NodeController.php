@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DataProducerNode;
+use App\Models\Node;
 use Illuminate\Http\Request;
 use Orchid\Support\Facades\Alert;
 
-class DataProducerNodeController extends Controller
+class NodeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,7 +20,7 @@ class DataProducerNodeController extends Controller
      * Show the form for creating a new resource.
      * @throws \Exception
      */
-    public function create(Request $request): DataProducerNode
+    public function create(Request $request): Node
     {
         $request->validate([
             'name' => 'required|min:3',
@@ -29,7 +29,7 @@ class DataProducerNodeController extends Controller
             'phone' => 'required',
         ]);
 
-        $dpn = new DataProducerNode([
+        $dpn = new Node([
             'name' => $request->post('name'),
             'desc' => $request->post('desc'),
             'email' => $request->post('email'),
@@ -57,7 +57,7 @@ class DataProducerNodeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(DataProducerNode $dataProducerNode)
+    public function show(Node $dataProducerNode)
     {
         //
     }
@@ -65,7 +65,7 @@ class DataProducerNodeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(DataProducerNode $dataProducerNode)
+    public function edit(Node $dataProducerNode)
     {
         //
     }
@@ -73,7 +73,7 @@ class DataProducerNodeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, DataProducerNode $dataProducerNode)
+    public function update(Request $request, Node $dataProducerNode)
     {
         //
     }
@@ -81,7 +81,7 @@ class DataProducerNodeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(DataProducerNode $dataProducerNode)
+    public function destroy(Node $dataProducerNode)
     {
         //
     }

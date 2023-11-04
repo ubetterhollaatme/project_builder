@@ -2,16 +2,12 @@
 
 namespace App\Orchid\Screens;
 
-use App\Http\Controllers\DataProducerNodeController;
-use App\Models\DataProducerNode;
+use App\Http\Controllers\NodeController;
+use App\Models\Node;
 use Illuminate\Http\Request;
-use Illuminate\Mail\Message;
-use Illuminate\Support\Facades\Mail;
 use Orchid\Screen\Actions\Button;
-use Orchid\Screen\Actions\DropDown;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Fields\Input;
-use Orchid\Screen\Fields\Quill;
 use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\TD;
 use Orchid\Support\Facades\Alert;
@@ -21,7 +17,7 @@ use Orchid\Screen\Screen;
 /**
  *
  */
-class DataProducerNodeScreen extends Screen
+class NodesScreen extends Screen
 {
     /**
      * Fetch data to be displayed on the screen.
@@ -31,7 +27,7 @@ class DataProducerNodeScreen extends Screen
     public function query(): iterable
     {
         return [
-            'data_producer_nodes' => DataProducerNode::all()
+            'nodes' => Node::all()
         ];
     }
 
@@ -42,7 +38,7 @@ class DataProducerNodeScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Nodes';
+        return 'Builder';
     }
 
     /**
@@ -66,7 +62,7 @@ class DataProducerNodeScreen extends Screen
             ModalToggle::make('Create node')
                 ->modal('Node creating form')
                 ->icon('plus')
-                ->method('addDataProducerNode')
+                ->method('addNode')
                 ->confirm(__('Are you sure?')),
 
             Button::make('Generate nodes')
@@ -89,7 +85,7 @@ class DataProducerNodeScreen extends Screen
     public function layout(): iterable
     {
         return [
-            Layout::table('data_producer_nodes', [
+            Layout::table('nodes', [
                 TD::make('id')->sort(),
                 TD::make('name'),
                 TD::make('email'),
@@ -132,10 +128,10 @@ class DataProducerNodeScreen extends Screen
 
     /**
      * @param Request $request
-     * @param DataProducerNodeController $controller
+     * @param NodeController $controller
      * @return void
      */
-    public function addDataProducerNode(Request $request, DataProducerNodeController $controller)
+    public function addNode(Request $request, NodeController $controller)
     {
         try {
             $dpn = $controller->create($request);
@@ -144,7 +140,7 @@ class DataProducerNodeScreen extends Screen
             return null;
         }
 
-        Alert::info("Центр #{$dpn->getAttribute('id')} успешно зарегистрирован");
+        Alert::info("Node #{$dpn->getAttribute('id')} registered successfully");
     }
 
     /**
@@ -152,7 +148,7 @@ class DataProducerNodeScreen extends Screen
      */
     public function generateNodes(): void
     {
-        DataProducerNode::factory()
+        Node::factory()
             ->count(20)
             ->make()
             ->each(fn ($node) => $node->save());
@@ -165,24 +161,10 @@ class DataProducerNodeScreen extends Screen
      */
     public function clearNodes(): void
     {
-        DataProducerNode::truncate();
+        Node::truncate();
 
         Alert::info("Nodes cleared");
     }
 
-    /**
-     * @return void
-     */
-    public function buildProject()
-    {
-        /*
-        Mail::raw($request->get('content'), function (Message $message) use ($request) {
-            $message->from('ubetterhollaatme@yandex.ru');
-            $message->to($email);
-            $message->subject($request->get('subject'));
-        });
-        */
-        Alert::info("Project builded, you can move in /project/ folder
-            and enter the command 'docker-compose up' to start project");
-    }
+
 }

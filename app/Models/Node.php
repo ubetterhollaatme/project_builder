@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Orchid\Screen\AsSource;
 
-class DataProducerNode extends Model
+class Node extends Model
 {
     use HasFactory, AsSource;
 

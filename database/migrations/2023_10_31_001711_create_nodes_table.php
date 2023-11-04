@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('data_producer_nodes', function (Blueprint $table) {
+        Schema::create('nodes', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
 
             $table->string('name')
-                ->default('Data Producer Node');
+                ->default('Node');
             $table->string('email')
                 ->default('ubetterhollaatme@yandex.ru')
                 ->unique();
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('data_producer_nodes');
+        Schema::dropIfExists('nodes');
     }
 };

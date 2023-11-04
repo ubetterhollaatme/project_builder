@@ -35,15 +35,15 @@ class PlatformProvider extends OrchidServiceProvider
     {
         return [
             Menu::make(__('Nodes'))
-                ->title(__('Data Registration Nodes'))
+                ->title(__('Nodes'))
                 ->icon('bs.grid')
-                ->route('builder.centers')
+                ->route('builder.nodes')
                 ->permission('platform.systems.users')
                 ->divider(),
             Menu::make(__('Builder'))
                 ->title(__('Project Builder'))
                 ->icon('bs.wrench')
-                ->route('builder.data_producer_node')
+                ->route('builder.builder')
                 ->permission('platform.systems.users')
                 ->divider(),
             Menu::make(__('Users'))

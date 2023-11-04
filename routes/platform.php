@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Orchid\Screens\DataProducerNodeScreen;
+use App\Orchid\Screens\BuilderScreen;
+use App\Orchid\Screens\NodesScreen;
 use App\Orchid\Screens\Examples\ExampleActionsScreen;
 use App\Orchid\Screens\Examples\ExampleCardsScreen;
 use App\Orchid\Screens\Examples\ExampleChartsScreen;
@@ -34,13 +35,15 @@ use Tabuna\Breadcrumbs\Trail;
 
 // project routes:
 
-Route::screen('data_producer_node', DataProducerNodeScreen::class)->name('builder.data_producer_node');
-Route::screen('centers', DataProducerNodeScreen::class)->name('builder.centers');
+Route::screen('/builder', BuilderScreen::class)
+    ->name('builder.builder');
+Route::screen('/nodes', NodesScreen::class)
+    ->name('builder.nodes');
 
 // lib routes:
 
 // Main
-Route::screen('/main', PlatformScreen::class)
+Route::screen('/main', NodesScreen::class)
     ->name('platform.main');
 
 // Platform > Profile

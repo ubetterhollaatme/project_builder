@@ -1,0 +1,844 @@
+---
+version: "3.7"
+services:
+  php_node_0:
+    container_name: php_node_0
+    build:
+      context: .
+      dockerfile: docker/php/node/Dockerfile
+    volumes:
+    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
+    - ./:/var/www/html/nodes:z
+    depends_on:
+      mysql_node_0:
+        condition: service_healthy
+    networks:
+    - project
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+  mysql_node_0:
+    container_name: mysql_node_0
+    image: mysql/mysql-server:8.0
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - mysql_node_0:/var/lib/mysql
+    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - project
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -proot
+      retries: "3"
+      timeout: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+  php_node_1:
+    container_name: php_node_1
+    build:
+      context: .
+      dockerfile: docker/php/node/Dockerfile
+    volumes:
+    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
+    - ./:/var/www/html/nodes:z
+    depends_on:
+      mysql_node_1:
+        condition: service_healthy
+    networks:
+    - project
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+  mysql_node_1:
+    container_name: mysql_node_1
+    image: mysql/mysql-server:8.0
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - mysql_node_1:/var/lib/mysql
+    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - project
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -proot
+      retries: "3"
+      timeout: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+  php_node_2:
+    container_name: php_node_2
+    build:
+      context: .
+      dockerfile: docker/php/node/Dockerfile
+    volumes:
+    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
+    - ./:/var/www/html/nodes:z
+    depends_on:
+      mysql_node_2:
+        condition: service_healthy
+    networks:
+    - project
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+  mysql_node_2:
+    container_name: mysql_node_2
+    image: mysql/mysql-server:8.0
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - mysql_node_2:/var/lib/mysql
+    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - project
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -proot
+      retries: "3"
+      timeout: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+  php_node_3:
+    container_name: php_node_3
+    build:
+      context: .
+      dockerfile: docker/php/node/Dockerfile
+    volumes:
+    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
+    - ./:/var/www/html/nodes:z
+    depends_on:
+      mysql_node_3:
+        condition: service_healthy
+    networks:
+    - project
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+  mysql_node_3:
+    container_name: mysql_node_3
+    image: mysql/mysql-server:8.0
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - mysql_node_3:/var/lib/mysql
+    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - project
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -proot
+      retries: "3"
+      timeout: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+  php_node_4:
+    container_name: php_node_4
+    build:
+      context: .
+      dockerfile: docker/php/node/Dockerfile
+    volumes:
+    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
+    - ./:/var/www/html/nodes:z
+    depends_on:
+      mysql_node_4:
+        condition: service_healthy
+    networks:
+    - project
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+  mysql_node_4:
+    container_name: mysql_node_4
+    image: mysql/mysql-server:8.0
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - mysql_node_4:/var/lib/mysql
+    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - project
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -proot
+      retries: "3"
+      timeout: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+  php_node_5:
+    container_name: php_node_5
+    build:
+      context: .
+      dockerfile: docker/php/node/Dockerfile
+    volumes:
+    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
+    - ./:/var/www/html/nodes:z
+    depends_on:
+      mysql_node_5:
+        condition: service_healthy
+    networks:
+    - project
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+  mysql_node_5:
+    container_name: mysql_node_5
+    image: mysql/mysql-server:8.0
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - mysql_node_5:/var/lib/mysql
+    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - project
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -proot
+      retries: "3"
+      timeout: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+  php_node_6:
+    container_name: php_node_6
+    build:
+      context: .
+      dockerfile: docker/php/node/Dockerfile
+    volumes:
+    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
+    - ./:/var/www/html/nodes:z
+    depends_on:
+      mysql_node_6:
+        condition: service_healthy
+    networks:
+    - project
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+  mysql_node_6:
+    container_name: mysql_node_6
+    image: mysql/mysql-server:8.0
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - mysql_node_6:/var/lib/mysql
+    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - project
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -proot
+      retries: "3"
+      timeout: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+  php_node_7:
+    container_name: php_node_7
+    build:
+      context: .
+      dockerfile: docker/php/node/Dockerfile
+    volumes:
+    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
+    - ./:/var/www/html/nodes:z
+    depends_on:
+      mysql_node_7:
+        condition: service_healthy
+    networks:
+    - project
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+  mysql_node_7:
+    container_name: mysql_node_7
+    image: mysql/mysql-server:8.0
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - mysql_node_7:/var/lib/mysql
+    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - project
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -proot
+      retries: "3"
+      timeout: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+  php_node_8:
+    container_name: php_node_8
+    build:
+      context: .
+      dockerfile: docker/php/node/Dockerfile
+    volumes:
+    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
+    - ./:/var/www/html/nodes:z
+    depends_on:
+      mysql_node_8:
+        condition: service_healthy
+    networks:
+    - project
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+  mysql_node_8:
+    container_name: mysql_node_8
+    image: mysql/mysql-server:8.0
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - mysql_node_8:/var/lib/mysql
+    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - project
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -proot
+      retries: "3"
+      timeout: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+  php_node_9:
+    container_name: php_node_9
+    build:
+      context: .
+      dockerfile: docker/php/node/Dockerfile
+    volumes:
+    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
+    - ./:/var/www/html/nodes:z
+    depends_on:
+      mysql_node_9:
+        condition: service_healthy
+    networks:
+    - project
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+  mysql_node_9:
+    container_name: mysql_node_9
+    image: mysql/mysql-server:8.0
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - mysql_node_9:/var/lib/mysql
+    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - project
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -proot
+      retries: "3"
+      timeout: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+  php_node_10:
+    container_name: php_node_10
+    build:
+      context: .
+      dockerfile: docker/php/node/Dockerfile
+    volumes:
+    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
+    - ./:/var/www/html/nodes:z
+    depends_on:
+      mysql_node_10:
+        condition: service_healthy
+    networks:
+    - project
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+  mysql_node_10:
+    container_name: mysql_node_10
+    image: mysql/mysql-server:8.0
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - mysql_node_10:/var/lib/mysql
+    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - project
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -proot
+      retries: "3"
+      timeout: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+  php_node_11:
+    container_name: php_node_11
+    build:
+      context: .
+      dockerfile: docker/php/node/Dockerfile
+    volumes:
+    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
+    - ./:/var/www/html/nodes:z
+    depends_on:
+      mysql_node_11:
+        condition: service_healthy
+    networks:
+    - project
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+  mysql_node_11:
+    container_name: mysql_node_11
+    image: mysql/mysql-server:8.0
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - mysql_node_11:/var/lib/mysql
+    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - project
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -proot
+      retries: "3"
+      timeout: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+  php_node_12:
+    container_name: php_node_12
+    build:
+      context: .
+      dockerfile: docker/php/node/Dockerfile
+    volumes:
+    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
+    - ./:/var/www/html/nodes:z
+    depends_on:
+      mysql_node_12:
+        condition: service_healthy
+    networks:
+    - project
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+  mysql_node_12:
+    container_name: mysql_node_12
+    image: mysql/mysql-server:8.0
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - mysql_node_12:/var/lib/mysql
+    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - project
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -proot
+      retries: "3"
+      timeout: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+  php_node_13:
+    container_name: php_node_13
+    build:
+      context: .
+      dockerfile: docker/php/node/Dockerfile
+    volumes:
+    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
+    - ./:/var/www/html/nodes:z
+    depends_on:
+      mysql_node_13:
+        condition: service_healthy
+    networks:
+    - project
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+  mysql_node_13:
+    container_name: mysql_node_13
+    image: mysql/mysql-server:8.0
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - mysql_node_13:/var/lib/mysql
+    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - project
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -proot
+      retries: "3"
+      timeout: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+  php_node_14:
+    container_name: php_node_14
+    build:
+      context: .
+      dockerfile: docker/php/node/Dockerfile
+    volumes:
+    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
+    - ./:/var/www/html/nodes:z
+    depends_on:
+      mysql_node_14:
+        condition: service_healthy
+    networks:
+    - project
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+  mysql_node_14:
+    container_name: mysql_node_14
+    image: mysql/mysql-server:8.0
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - mysql_node_14:/var/lib/mysql
+    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - project
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -proot
+      retries: "3"
+      timeout: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+  php_node_15:
+    container_name: php_node_15
+    build:
+      context: .
+      dockerfile: docker/php/node/Dockerfile
+    volumes:
+    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
+    - ./:/var/www/html/nodes:z
+    depends_on:
+      mysql_node_15:
+        condition: service_healthy
+    networks:
+    - project
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+  mysql_node_15:
+    container_name: mysql_node_15
+    image: mysql/mysql-server:8.0
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - mysql_node_15:/var/lib/mysql
+    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - project
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -proot
+      retries: "3"
+      timeout: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+  php_node_16:
+    container_name: php_node_16
+    build:
+      context: .
+      dockerfile: docker/php/node/Dockerfile
+    volumes:
+    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
+    - ./:/var/www/html/nodes:z
+    depends_on:
+      mysql_node_16:
+        condition: service_healthy
+    networks:
+    - project
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+  mysql_node_16:
+    container_name: mysql_node_16
+    image: mysql/mysql-server:8.0
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - mysql_node_16:/var/lib/mysql
+    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - project
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -proot
+      retries: "3"
+      timeout: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+  php_node_17:
+    container_name: php_node_17
+    build:
+      context: .
+      dockerfile: docker/php/node/Dockerfile
+    volumes:
+    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
+    - ./:/var/www/html/nodes:z
+    depends_on:
+      mysql_node_17:
+        condition: service_healthy
+    networks:
+    - project
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+  mysql_node_17:
+    container_name: mysql_node_17
+    image: mysql/mysql-server:8.0
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - mysql_node_17:/var/lib/mysql
+    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - project
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -proot
+      retries: "3"
+      timeout: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+  php_node_18:
+    container_name: php_node_18
+    build:
+      context: .
+      dockerfile: docker/php/node/Dockerfile
+    volumes:
+    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
+    - ./:/var/www/html/nodes:z
+    depends_on:
+      mysql_node_18:
+        condition: service_healthy
+    networks:
+    - project
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+  mysql_node_18:
+    container_name: mysql_node_18
+    image: mysql/mysql-server:8.0
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - mysql_node_18:/var/lib/mysql
+    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - project
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -proot
+      retries: "3"
+      timeout: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+  php_node_19:
+    container_name: php_node_19
+    build:
+      context: .
+      dockerfile: docker/php/node/Dockerfile
+    volumes:
+    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
+    - ./:/var/www/html/nodes:z
+    depends_on:
+      mysql_node_19:
+        condition: service_healthy
+    networks:
+    - project
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+  mysql_node_19:
+    container_name: mysql_node_19
+    image: mysql/mysql-server:8.0
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - mysql_node_19:/var/lib/mysql
+    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - project
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -proot
+      retries: "3"
+      timeout: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+...

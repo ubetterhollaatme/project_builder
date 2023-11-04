@@ -15,6 +15,11 @@ services:
             - php_builder
         networks:
             - project
+        deploy:
+            resources:
+                limits:
+                    cpus: '0.1'
+                    memory: 128M
 
     php_builder:
         container_name: php_builder
@@ -31,6 +36,11 @@ services:
                 condition: service_healthy
         networks:
             - project
+        deploy:
+            resources:
+                limits:
+                    cpus: '0.25'
+                    memory: 256M
 
     mysql_builder:
         container_name: mysql_builder
@@ -51,6 +61,11 @@ services:
                 - '-proot'
             retries: 3
             timeout: 5s
+        deploy:
+            resources:
+                limits:
+                    cpus: '0.5'
+                    memory: 512M
 
 networks:
     project:

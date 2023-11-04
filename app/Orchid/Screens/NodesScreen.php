@@ -134,13 +134,13 @@ class NodesScreen extends Screen
     public function addNode(Request $request, NodeController $controller)
     {
         try {
-            $dpn = $controller->create($request);
+            $node = $controller->create($request);
         } catch (\Throwable $e) {
             Alert::info($e->getMessage());
             return null;
         }
 
-        Alert::info("Node #{$dpn->getAttribute('id')} registered successfully");
+        Alert::info("Node #{$node->getAttribute('id')} registered successfully");
     }
 
     /**

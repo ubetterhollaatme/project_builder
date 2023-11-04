@@ -12,12 +12,17 @@ services:
             - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
             - ./:/var/www/html/nodes:z
         depends_on:
-            - php_humanzepola
+            - php_node_
         networks:
             - project
+        deploy:
+            resources:
+                limits:
+                    cpus: '0.25'
+                    memory: 256M
 
-    php_node:
-        container_name: php_node
+    php_node_:
+        container_name: php_node_
         build:
             context: .
             dockerfile: docker/php/node/Dockerfile
@@ -25,19 +30,24 @@ services:
             - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
             - ./:/var/www/html/nodes:z
         depends_on:
-            mysql_humanzepola:
+            mysql_node_:
                 condition: service_healthy
         networks:
             - project
+        deploy:
+            resources:
+                limits:
+                    cpus: '0.25'
+                    memory: 256M
 
-    mysql_node:
-        container_name: mysql_node
+    mysql_node_:
+        container_name: mysql_node_
         image: 'mysql/mysql-server:8.0'
         environment:
             MYSQL_ROOT_HOST: '%'
             MYSQL_ROOT_PASSWORD: 'root'
         volumes:
-            - 'mysql_node:/var/lib/mysql'
+            - 'mysql_node_:/var/lib/mysql'
             - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
         networks:
             - project
@@ -49,11 +59,16 @@ services:
                 - '-proot'
             retries: 3
             timeout: 5s
+        deploy:
+            resources:
+                limits:
+                    cpus: '0.5'
+                    memory: 512M
 
 networks:
-    project:
+    project_:
         driver: bridge
 
 volumes:
-    mysql_node:
+    mysql_node_:
         driver: local

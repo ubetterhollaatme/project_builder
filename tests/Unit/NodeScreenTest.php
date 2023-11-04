@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Orchid\Support\Testing\DynamicTestScreen;
 use Orchid\Support\Testing\ScreenTesting;
 use Tests\CreatesApplication;
 use Tests\TestCase;
@@ -19,7 +20,7 @@ class NodeScreenTest extends TestCase
     /**
      * @test
      */
-    public function admin_can_create_data_producer_node()
+    public function admin_can_create_node()
     {
         $name = fake()->name();
         $desc = fake()->text();
@@ -27,9 +28,9 @@ class NodeScreenTest extends TestCase
         $phone = fake()->phoneNumber();
 
         $this
-            ->getDPNScreen()
+            ->getNodeScreen()
             ->actingAs(User::factory()->admin()->create())
-            ->method('addDataProducerNode', [
+            ->method('addNode', [
                 'name' => $name,
                 'desc' => $desc,
                 'email' => $email,
@@ -45,12 +46,37 @@ class NodeScreenTest extends TestCase
     /**
      * @test
      */
-    public function user_can_not_create_data_producer_node()
+    public function guest_can_not_create_node()
+    {
+        $name = fake()->name();
+        $desc = fake()->text();
+        $email = fake()->unique()->safeEmail();
+        $phone = fake()->phoneNumber();
+
+        $this
+            ->getNodeScreen()
+            ->method('addNode', [
+                'name' => $name,
+                'desc' => $desc,
+                'email' => $email,
+                'phone' => $phone,
+            ])
+            ->assertStatus(200)
+            ->assertDontSeeText($name)
+            ->assertDontSeeText($desc)
+            ->assertDontSeeText($email)
+            ->assertDontSeeText(onlyDigits($phone));
+    }
+
+    /**
+     * @test
+     */
+    public function user_can_not_create_node()
     {
         $this
-            ->getDPNScreen()
+            ->getNodeScreen()
             ->actingAs(User::factory()->create())
-            ->method('addDataProducerNode', [
+            ->method('addNode', [
                 'name' => fake()->name(),
                 'desc' => fake()->text(),
                 'email' => fake()->unique()->safeEmail(),
@@ -62,10 +88,10 @@ class NodeScreenTest extends TestCase
     /**
      * @test
      */
-    public function admin_can_generate_data_producer_nodes()
+    public function admin_can_generate_nodes()
     {
         $this
-            ->getDPNScreen()
+            ->getNodeScreen()
             ->actingAs(User::factory()->admin()->create())
             ->method('generateNodes')
             ->assertStatus(200)
@@ -75,10 +101,22 @@ class NodeScreenTest extends TestCase
     /**
      * @test
      */
-    public function user_can_not_generate_data_producer_nodes()
+    public function guest_can_not_generate_nodes()
     {
         $this
-            ->getDPNScreen()
+            ->getNodeScreen()
+            ->method('generateNodes')
+            ->assertStatus(200)
+            ->assertDontSeeText('Configure columns');
+    }
+
+    /**
+     * @test
+     */
+    public function user_can_not_generate_nodes()
+    {
+        $this
+            ->getNodeScreen()
             ->actingAs(User::factory()->create())
             ->method('generateNodes')
             ->assertStatus(403);
@@ -87,10 +125,10 @@ class NodeScreenTest extends TestCase
     /**
      * @test
      */
-    public function admin_can_clear_data_producer_nodes()
+    public function admin_can_clear_nodes()
     {
         $this
-            ->getDPNScreen()
+            ->getNodeScreen()
             ->actingAs(User::factory()->admin()->create())
             ->method('clearNodes')
             ->assertStatus(200)
@@ -100,17 +138,29 @@ class NodeScreenTest extends TestCase
     /**
      * @test
      */
-    public function user_can_not_clear_data_producer_nodes()
+    public function guest_can_not_clear_nodes()
     {
         $this
-            ->getDPNScreen()
+            ->getNodeScreen()
+            ->method('clearNodes')
+            ->assertStatus(200)
+            ->assertDontSeeText('There are no objects currently displayed');
+    }
+
+    /**
+     * @test
+     */
+    public function user_can_not_clear_nodes()
+    {
+        $this
+            ->getNodeScreen()
             ->actingAs(User::factory()->create())
             ->method('clearNodes')
             ->assertStatus(403);
     }
 
-    private function getDPNScreen()
+    private function getNodeScreen(): DynamicTestScreen
     {
-        return $this->screen('builder.data_producer_node');
+        return $this->screen('builder.nodes');
     }
 }

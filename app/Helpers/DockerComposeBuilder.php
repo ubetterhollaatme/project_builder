@@ -18,34 +18,28 @@ class DockerComposeBuilder
         $this->parsedNodeBuildSample = $parsedNodeBuildSample;
     }
 
-    #[NoReturn] public function build(): void
+    #[NoReturn] public function build(array $defaultServices = []): void
     {
         $build = [
             'version' => $this->config['version'],
-            'services' => [],
+            'services' => $defaultServices,
         ];
-
-
-        echo "<pre>";
-        print_r($this->parsedNodeBuildSample);
 
         $nodes = Node::all();
 
-        dd($nodes);
-
-        for ($i = 0; $i < $config->maternity_hospital_nodes; $i++) {
-            foreach ($nodeSample['services'] as $serviceName => $service) {
+        foreach ($nodes as $i => $node) {
+            foreach ($this->parsedNodeBuildSample['services'] as $serviceName => $service) {
                 if (!$this->isNeedSerialNumberIn($serviceName)) {
                     continue;
                 }
 
-                $build['services']["{$serviceName}_{$i}"] = $this->serviceKeyIdentifierRecursive($service, $i);
+                $build['services']["{$serviceName}{$i}"] = $this->serviceKeyIdentifierRecursive($service, $i);
             }
         }
 
-        yaml_emit_file(__DIR__ . '/build.yml', $build);
+        yaml_emit_file('/var/www/html/project/build.yml', $build);
 
-        echo file_get_contents(__DIR__ . '/build.yml');
+        echo file_get_contents('/var/www/html/project/build.yml');
     }
 
     function serviceKeyIdentifierRecursive(array $service, int $id): array
@@ -53,7 +47,7 @@ class DockerComposeBuilder
         $identifiedService = [];
 
         foreach ($service as $attribute => $value) {
-            $key = $this->isNeedSerialNumberIn($attribute) ? "{$attribute}_{$id}" : $attribute;
+            $key = $this->isNeedSerialNumberIn($attribute) ? "{$attribute}{$id}" : $attribute;
             $identifiedService[$key] =
                 is_array($value)
                     ? $this->serviceKeyIdentifierRecursive($value, $id)
@@ -65,10 +59,13 @@ class DockerComposeBuilder
 
     function serviceValueIdentifier(string $value, int $id): string
     {
-        if ($this->isNeedSerialNumberIn($value)) {
-            preg_match('/([a-z]|_[a-z])*/m', $value, $matches);
-            print_r($matches);
-            return str_replace($matches[0], "{$matches[0]}_{$id}", $value);
+        try {
+            if ($this->isNeedSerialNumberIn($value)) {
+                preg_match('/node_/', $value, $matches);
+                return str_replace($matches[0], "{$matches[0]}{$id}", $value);
+            }
+        } catch (\Throwable $e) {
+            dd($value);
         }
 
         return $value;

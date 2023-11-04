@@ -19,9 +19,9 @@ class NodeFactory extends Factory
     {
         return [
             'name' => fake()->name(),
+            'desc' => fake()->realText(),
             'email' => fake()->unique()->safeEmail(),
             'phone' => fake()->phoneNumber(),
-            'desc' => fake()->realText(),
         ];
     }
 }

@@ -25,7 +25,7 @@ class NodeController extends Controller
         $request->validate([
             'name' => 'required|min:3',
             'desc' => 'required|min:5',
-            'email' => 'required|unique:data_producer_nodes|email',
+            'email' => 'required|unique:nodes|email',
             'phone' => 'required',
         ]);
 

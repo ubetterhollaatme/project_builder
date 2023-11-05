@@ -3,7 +3,9 @@
 namespace App\Helpers;
 
 use App\Models\Node;
+use FilesystemIterator;
 use JetBrains\PhpStorm\NoReturn;
+use RecursiveDirectoryIterator;
 
 class DockerComposeBuilder
 {
@@ -49,6 +51,8 @@ class DockerComposeBuilder
             foreach ($nodes as $nodeKey => $node) {
                 unset($nodes[$nodeKey]);
 
+                $this->buildNodeDir($nodeKey);
+
                 $nodeId = $nodeKey + 1;
                 $volumes[] = str_replace(
                     str_replace('php_', '', $serviceKey),
@@ -67,6 +71,27 @@ dd($this->build);
         yaml_emit_file('/var/www/html/project/build.yml', $this->build);
 
         echo file_get_contents('/var/www/html/project/build.yml');
+    }
+
+    public function buildNodeDir(int $key): void
+    {
+        $key++;
+        $nodeSampleDir = '/var/www/html/nodes/node_sample';
+        $nodeDir = "/var/www/html/nodes/node_{$key}";
+
+        mkdir($nodeDir, 0755);
+
+        foreach (
+            $iterator = new \RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($nodeSampleDir, FilesystemIterator::SKIP_DOTS),
+                \RecursiveIteratorIterator::SELF_FIRST) as $item
+        ) {
+            if ($item->isDir()) {
+                mkdir($nodeDir . DIRECTORY_SEPARATOR . $iterator->getSubPathname());
+            } else {
+                copy($item, $nodeDir . DIRECTORY_SEPARATOR . $iterator->getSubPathname());
+            }
+        }
     }
 
     function serviceKeyIdentifierRecursive(array $service, int $id): array

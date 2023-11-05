@@ -10,7 +10,7 @@ services:
             - "80:80"
         volumes:
             - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-            - ./:/var/www/html/nodes:z
+            - ./nodes/node_:/var/www/html/nodes/node_:z
         depends_on:
             - php_node_
         networks:
@@ -28,7 +28,7 @@ services:
             dockerfile: docker/php/node/Dockerfile
         volumes:
             - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-            - ./:/var/www/html/nodes:z
+            - ./nodes/node_:/var/www/html/nodes/node_:z
         depends_on:
             mysql_node_:
                 condition: service_healthy

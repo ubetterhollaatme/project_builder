@@ -6,7 +6,6 @@ use App\Helpers\DockerComposeBuilder;
 use Illuminate\Http\Request;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Fields\Input;
-use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
 use Orchid\Support\Facades\Alert;
@@ -62,28 +61,10 @@ class BuilderScreen extends Screen
         return [
             Layout::modal('Builder form', [
                 Layout::rows([
-                    Input::make('name')
-                        ->title('Node name')
-                        ->placeholder('My node #1')
-                        ->help('Enter your node name'),
-
-                    Input::make('email')
-                        ->type('email')
-                        ->title('Associated E-mail')
-                        ->placeholder('E-mail')
-                        ->help('Enter E-mail for sending authorization data
-                            of the administrative panel of new node'),
-
-                    Input::make('phone')
-                        ->mask('+7 (999) 999-9999')
-                        ->title('Associated Phone Number')
-                        ->placeholder('+7 (999) 999-9999')
-                        ->help('Enter phone number of the node'),
-
-                    TextArea::make('desc')
-                        ->title('Node Description')
-                        ->placeholder('My new super-mega-node')
-                        ->help('Enter description of your node'),
+                    Input::make('nodes_per_server')
+                        ->title('Nodes Per Server')
+                        ->placeholder('8')
+                        ->help('Enter how much nodes do you want to place on each server'),
                 ])
             ])
                 ->applyButton('Add')
@@ -98,16 +79,14 @@ class BuilderScreen extends Screen
      */
     public function buildProject(Request $request): void
     {
-//        $request->validate([
-//            'name' => 'required|min:3',
-//            'desc' => 'required|min:5',
-//            'email' => 'required|unique:data_producer_nodes|email',
-//            'phone' => 'required',
-//        ]);
+        $request->validate([
+            'nodes_per_server' => 'required|min:1|integer',
+        ]);
 
         $builder = new DockerComposeBuilder(
             [
                 'version' => '3.7',
+                'nodes_per_server' => $request->input('nodes_per_server'),
             ],
             yaml_parse_file('/var/www/html/docker/node/docker-compose.yml'));
 

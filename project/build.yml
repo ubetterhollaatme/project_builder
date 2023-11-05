@@ -8,7 +8,7 @@ services:
       dockerfile: docker/php/node/Dockerfile
     volumes:
     - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./:/var/www/html/nodes:z
+    - ./nodes/node_0:/var/www/html/nodes/node_0:z
     depends_on:
       mysql_node_0:
         condition: service_healthy
@@ -50,7 +50,7 @@ services:
       dockerfile: docker/php/node/Dockerfile
     volumes:
     - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./:/var/www/html/nodes:z
+    - ./nodes/node_1:/var/www/html/nodes/node_1:z
     depends_on:
       mysql_node_1:
         condition: service_healthy
@@ -92,7 +92,7 @@ services:
       dockerfile: docker/php/node/Dockerfile
     volumes:
     - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./:/var/www/html/nodes:z
+    - ./nodes/node_2:/var/www/html/nodes/node_2:z
     depends_on:
       mysql_node_2:
         condition: service_healthy
@@ -134,7 +134,7 @@ services:
       dockerfile: docker/php/node/Dockerfile
     volumes:
     - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./:/var/www/html/nodes:z
+    - ./nodes/node_3:/var/www/html/nodes/node_3:z
     depends_on:
       mysql_node_3:
         condition: service_healthy
@@ -176,7 +176,7 @@ services:
       dockerfile: docker/php/node/Dockerfile
     volumes:
     - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./:/var/www/html/nodes:z
+    - ./nodes/node_4:/var/www/html/nodes/node_4:z
     depends_on:
       mysql_node_4:
         condition: service_healthy
@@ -218,7 +218,7 @@ services:
       dockerfile: docker/php/node/Dockerfile
     volumes:
     - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./:/var/www/html/nodes:z
+    - ./nodes/node_5:/var/www/html/nodes/node_5:z
     depends_on:
       mysql_node_5:
         condition: service_healthy
@@ -260,7 +260,7 @@ services:
       dockerfile: docker/php/node/Dockerfile
     volumes:
     - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./:/var/www/html/nodes:z
+    - ./nodes/node_6:/var/www/html/nodes/node_6:z
     depends_on:
       mysql_node_6:
         condition: service_healthy
@@ -302,7 +302,7 @@ services:
       dockerfile: docker/php/node/Dockerfile
     volumes:
     - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./:/var/www/html/nodes:z
+    - ./nodes/node_7:/var/www/html/nodes/node_7:z
     depends_on:
       mysql_node_7:
         condition: service_healthy
@@ -344,7 +344,7 @@ services:
       dockerfile: docker/php/node/Dockerfile
     volumes:
     - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./:/var/www/html/nodes:z
+    - ./nodes/node_8:/var/www/html/nodes/node_8:z
     depends_on:
       mysql_node_8:
         condition: service_healthy
@@ -386,7 +386,7 @@ services:
       dockerfile: docker/php/node/Dockerfile
     volumes:
     - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./:/var/www/html/nodes:z
+    - ./nodes/node_9:/var/www/html/nodes/node_9:z
     depends_on:
       mysql_node_9:
         condition: service_healthy
@@ -428,7 +428,7 @@ services:
       dockerfile: docker/php/node/Dockerfile
     volumes:
     - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./:/var/www/html/nodes:z
+    - ./nodes/node_10:/var/www/html/nodes/node_10:z
     depends_on:
       mysql_node_10:
         condition: service_healthy
@@ -470,7 +470,7 @@ services:
       dockerfile: docker/php/node/Dockerfile
     volumes:
     - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./:/var/www/html/nodes:z
+    - ./nodes/node_11:/var/www/html/nodes/node_11:z
     depends_on:
       mysql_node_11:
         condition: service_healthy
@@ -512,7 +512,7 @@ services:
       dockerfile: docker/php/node/Dockerfile
     volumes:
     - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./:/var/www/html/nodes:z
+    - ./nodes/node_12:/var/www/html/nodes/node_12:z
     depends_on:
       mysql_node_12:
         condition: service_healthy
@@ -554,7 +554,7 @@ services:
       dockerfile: docker/php/node/Dockerfile
     volumes:
     - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./:/var/www/html/nodes:z
+    - ./nodes/node_13:/var/www/html/nodes/node_13:z
     depends_on:
       mysql_node_13:
         condition: service_healthy
@@ -596,7 +596,7 @@ services:
       dockerfile: docker/php/node/Dockerfile
     volumes:
     - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./:/var/www/html/nodes:z
+    - ./nodes/node_14:/var/www/html/nodes/node_14:z
     depends_on:
       mysql_node_14:
         condition: service_healthy
@@ -638,7 +638,7 @@ services:
       dockerfile: docker/php/node/Dockerfile
     volumes:
     - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./:/var/www/html/nodes:z
+    - ./nodes/node_15:/var/www/html/nodes/node_15:z
     depends_on:
       mysql_node_15:
         condition: service_healthy
@@ -680,7 +680,7 @@ services:
       dockerfile: docker/php/node/Dockerfile
     volumes:
     - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./:/var/www/html/nodes:z
+    - ./nodes/node_16:/var/www/html/nodes/node_16:z
     depends_on:
       mysql_node_16:
         condition: service_healthy
@@ -722,7 +722,7 @@ services:
       dockerfile: docker/php/node/Dockerfile
     volumes:
     - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./:/var/www/html/nodes:z
+    - ./nodes/node_17:/var/www/html/nodes/node_17:z
     depends_on:
       mysql_node_17:
         condition: service_healthy
@@ -764,7 +764,7 @@ services:
       dockerfile: docker/php/node/Dockerfile
     volumes:
     - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./:/var/www/html/nodes:z
+    - ./nodes/node_18:/var/www/html/nodes/node_18:z
     depends_on:
       mysql_node_18:
         condition: service_healthy
@@ -806,7 +806,7 @@ services:
       dockerfile: docker/php/node/Dockerfile
     volumes:
     - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./:/var/www/html/nodes:z
+    - ./nodes/node_19:/var/www/html/nodes/node_19:z
     depends_on:
       mysql_node_19:
         condition: service_healthy

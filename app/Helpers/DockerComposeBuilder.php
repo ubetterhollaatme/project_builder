@@ -6,27 +6,23 @@ use App\Models\Node;
 use FilesystemIterator;
 use JetBrains\PhpStorm\NoReturn;
 use RecursiveDirectoryIterator;
+use function PHPUnit\Framework\directoryExists;
 
 class DockerComposeBuilder
 {
-    private array $config = [
-        'version' => '3.7',
-    ];
+    private array $config;
     private array $parsedNodeBuildSample;
-    private array $build = [];
+    private array $build;
 
-    public function __construct(array $config, array $parsedNodeBuildSample)
+    public function __construct(array $config, array $build, array $parsedNodeBuildSample)
     {
-        $this->config = array_merge($this->config, $config);
+        $this->config = $config;
+        $this->build = $build;
         $this->parsedNodeBuildSample = $parsedNodeBuildSample;
     }
 
     #[NoReturn] public function build(array $defaultServices = []): void
     {
-        $this->build = [
-            'version' => $this->config['version'],
-            'services' => $defaultServices,
-        ];
         $nodes = Node::all();
         $serversCount = round(count($nodes) / $this->config['nodes_per_server']);
 
@@ -40,7 +36,7 @@ class DockerComposeBuilder
             }
         }
         foreach ($this->build['services'] as $serviceKey => $service) {
-            if (!str_contains($serviceKey, 'php_')) {
+            if (!str_contains($serviceKey, 'php_') || str_contains($serviceKey, 'humanzepola')) {
                 continue;
             }
 
@@ -50,6 +46,8 @@ class DockerComposeBuilder
 
             foreach ($nodes as $nodeKey => $node) {
                 unset($nodes[$nodeKey]);
+
+                // TODO $this->putNodeToNginxConf($nodeKey);
 
                 $this->buildNodeDir($nodeKey);
 
@@ -76,10 +74,12 @@ dd($this->build);
     public function buildNodeDir(int $key): void
     {
         $key++;
-        $nodeSampleDir = '/var/www/html/nodes/node_sample';
-        $nodeDir = "/var/www/html/nodes/node_{$key}";
+        $nodeSampleDir = '/var/www/html/project/nodes/node_sample';
+        $nodeDir = "/var/www/html/project/nodes/node_{$key}";
 
-        mkdir($nodeDir, 0755);
+        if (!file_exists($nodeDir)) {
+            mkdir($nodeDir, 0755);
+        }
 
         foreach (
             $iterator = new \RecursiveIteratorIterator(

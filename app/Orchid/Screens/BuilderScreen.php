@@ -84,11 +84,10 @@ class BuilderScreen extends Screen
         ]);
 
         $builder = new DockerComposeBuilder(
-            [
-                'version' => '3.7',
-                'nodes_per_server' => $request->input('nodes_per_server'),
-            ],
-            yaml_parse_file('/var/www/html/docker/node/docker-compose.yml'));
+            ['nodes_per_server' => $request->input('nodes_per_server')],
+            yaml_parse_file('/var/www/html/project/build.sample.yml'),
+            yaml_parse_file('/var/www/html/project/nodes/node_sample/docker-compose.yml')
+        );
 
         $builder->build();
         /*

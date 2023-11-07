@@ -26,8 +26,6 @@ services:
         build:
             context: .
             dockerfile: docker/php/builder/Dockerfile
-        ports:
-            - "3306:3306"
         volumes:
             - ./docker/php/builder/php.ini:/usr/local/etc/php/php.ini
             - ./:/var/www/html:z
@@ -45,6 +43,8 @@ services:
     mysql_builder:
         container_name: mysql_builder
         image: 'mysql/mysql-server:8.0'
+        ports:
+            - "3306:3306"
         environment:
             MYSQL_ROOT_HOST: '%'
             MYSQL_ROOT_PASSWORD: 'root'

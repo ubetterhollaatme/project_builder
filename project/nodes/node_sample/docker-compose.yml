@@ -4,7 +4,7 @@ services:
     nginx:
         container_name: nginx
         build:
-            context: .
+            context: ../../../docker/node
             dockerfile: docker/nginx/Dockerfile
         ports:
             - "80:80"
@@ -24,7 +24,7 @@ services:
     php_node_:
         container_name: php_node_
         build:
-            context: .
+            context: ../../../docker/node
             dockerfile: docker/php/node/Dockerfile
         volumes:
             - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini

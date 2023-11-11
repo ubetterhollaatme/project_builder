@@ -1,31 +1,31 @@
 ---
 version: "3.7"
 services:
-  nginx:
-    container_name: nginx
+  nginx_build:
+    container_name: nginx_build
     build:
       dockerfile: ./docker/nginx/Dockerfile
     ports:
-    - 80-100:80-100
+    - 80-85:80-85
     volumes:
     - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     - ./nodes:/var/www/html/nodes:z
     - ./humanzepola:/var/www/html/humanzepola:z
     depends_on:
     - php_humanzepola
+    - php_node_1
+    - php_node_2
     networks:
     - project
   php_humanzepola:
     container_name: php_humanzepola
     build:
-      dockerfile: ./humanzepola/docker/php/Dockerfile
+      context: ./humanzepola/docker/php
+      dockerfile: Dockerfile
     volumes:
-    - ./humanzepola/docker/php/php.ini:/usr/local/etc/php/php.ini
     - ./humanzepola:/var/www/html:z
     depends_on:
       mysql_humanzepola:
-        condition: service_healthy
-      rabbitmq:
         condition: service_healthy
     networks:
     - project
@@ -48,41 +48,15 @@ services:
       - -proot
       retries: 3
       timeout: 5s
-  rabbitmq:
-    container_name: rabbitmq
-    build:
-      dockerfile: ./docker/rabbitmq/Dockerfile
-    ports:
-    - 15672:15672
-    - 5672:5672
-    healthcheck:
-      test:
-      - CMD
-      - curl
-      - -f
-      - http://localhost:15672
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    volumes:
-    - rabbitmq-data:/var/lib/rabbitmq
-    networks:
-    - project
   php_node_1:
     container_name: php_node_1
     build:
-      context: ../../../docker/node
-      dockerfile: docker/php/node/Dockerfile
+      context: ./nodes/node_1/docker/php/node
+      dockerfile: Dockerfile
     volumes:
-    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
     - ./nodes/node_1:/var/www/html/nodes/node_1:z
     - ./nodes/node_2:/var/www/html/nodes/node_2:z
     - ./nodes/node_3:/var/www/html/nodes/node_3:z
-    - ./nodes/node_4:/var/www/html/nodes/node_4:z
-    - ./nodes/node_5:/var/www/html/nodes/node_5:z
-    - ./nodes/node_6:/var/www/html/nodes/node_6:z
-    - ./nodes/node_7:/var/www/html/nodes/node_7:z
-    - ./nodes/node_8:/var/www/html/nodes/node_8:z
     depends_on:
       mysql_node_1:
         condition: service_healthy
@@ -120,18 +94,11 @@ services:
   php_node_2:
     container_name: php_node_2
     build:
-      context: ../../../docker/node
-      dockerfile: docker/php/node/Dockerfile
+      context: ./nodes/node_2/docker/php/node
+      dockerfile: Dockerfile
     volumes:
-    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./nodes/node_9:/var/www/html/nodes/node_9:z
-    - ./nodes/node_10:/var/www/html/nodes/node_10:z
-    - ./nodes/node_11:/var/www/html/nodes/node_11:z
-    - ./nodes/node_12:/var/www/html/nodes/node_12:z
-    - ./nodes/node_13:/var/www/html/nodes/node_13:z
-    - ./nodes/node_14:/var/www/html/nodes/node_14:z
-    - ./nodes/node_15:/var/www/html/nodes/node_15:z
-    - ./nodes/node_16:/var/www/html/nodes/node_16:z
+    - ./nodes/node_4:/var/www/html/nodes/node_4:z
+    - ./nodes/node_5:/var/www/html/nodes/node_5:z
     depends_on:
       mysql_node_2:
         condition: service_healthy
@@ -166,57 +133,14 @@ services:
         limits:
           cpus: "0.5"
           memory: 512M
-  php_node_3:
-    container_name: php_node_3
-    build:
-      context: ../../../docker/node
-      dockerfile: docker/php/node/Dockerfile
-    volumes:
-    - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
-    - ./nodes/node_17:/var/www/html/nodes/node_17:z
-    - ./nodes/node_18:/var/www/html/nodes/node_18:z
-    - ./nodes/node_19:/var/www/html/nodes/node_19:z
-    - ./nodes/node_20:/var/www/html/nodes/node_20:z
-    depends_on:
-      mysql_node_3:
-        condition: service_healthy
-    networks:
-    - project
-    deploy:
-      resources:
-        limits:
-          cpus: "0.25"
-          memory: 256M
-  mysql_node_3:
-    container_name: mysql_node_3
-    image: mysql/mysql-server:8.0
-    environment:
-      MYSQL_ROOT_HOST: '%'
-      MYSQL_ROOT_PASSWORD: root
-    volumes:
-    - mysql_node_3:/var/lib/mysql
-    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
-    networks:
-    - project
-    healthcheck:
-      test:
-      - CMD
-      - mysqladmin
-      - ping
-      - -proot
-      retries: "3"
-      timeout: 5s
-    deploy:
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: 512M
 networks:
   project:
     driver: bridge
 volumes:
-  rabbitmq-data:
-    driver: local
   mysql_humanzepola:
+    driver: local
+  mysql_node_1:
+    driver: local
+  mysql_node_2:
     driver: local
 ...

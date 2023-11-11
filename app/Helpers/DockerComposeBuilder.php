@@ -15,7 +15,10 @@ class DockerComposeBuilder
     protected array $config;
     protected array $parsedNodeBuildSample;
     protected array $build;
-    protected array $paths = ['base' => '/var/www/html/project'];
+    protected array $paths = [
+        'base' => '/var/www/html',
+        'project' => '/var/www/html/project',
+    ];
 
     public function __construct(array $config, array $build, array $parsedNodeBuildSample)
     {
@@ -23,24 +26,36 @@ class DockerComposeBuilder
         $this->build = $build;
         $this->parsedNodeBuildSample = $parsedNodeBuildSample;
         $this->paths = array_merge($this->paths, [
-            'build' => "{$this->paths['base']}/build.yml",
-            'nodes' => "{$this->paths['base']}/nodes",
-            'nginx_config' => "{$this->paths['base']}/docker/nginx/nginx.conf",
-            'nginx_config_sample_full' => "{$this->paths['base']}/docker/nginx/nginx.sample.conf",
-            'nginx_config_sample_node' => "{$this->paths['base']}/nodes/node_sample/docker/nginx/server.sample.conf",
+            'build' => "{$this->paths['project']}/docker-compose.yml",
+            'container_nodes' => "{$this->paths['base']}/nodes",
+            'nodes' => "{$this->paths['project']}/nodes",
+            'nginx_config' => "{$this->paths['project']}/docker/nginx/nginx.conf",
+            'nginx_config_sample_full' => "{$this->paths['project']}/docker/nginx/nginx.sample.conf",
+            'nginx_config_sample_node' => "{$this->paths['project']}/nodes/node_sample/docker/nginx/server.sample.conf",
             'node_root' => '/public',
             'node_prefix' => '/node_',
         ]);
     }
 
-    #[NoReturn] public function build(array $defaultServices = []): void
+    #[NoReturn] public function build(): void
     {
-        $nodes = Node::all();
-        $serversCount = round(count($nodes) / $this->config['nodes_per_server']);
-
         $this->refreshNginxConf();
         $this->refreshNodesFolder();
+//dd([]); // for cleaning up
+        $this->prepareSerialServices();
+        $this->compactNginxPorts();
 
+        yaml_emit_file($this->paths['build'], $this->build);
+
+        dd($this->build);
+    }
+
+    protected function prepareSerialServices(): void
+    {
+        $nodes = Node::all();
+        $serversCount = $this->config['nodes_per_server'] <= count($nodes)
+            ? round(count($nodes) / $this->config['nodes_per_server'])
+            : 1;
         for ($i = 1; $i <= $serversCount; $i++) {
             foreach ($this->parsedNodeBuildSample['services'] as $serviceName => $service) {
                 if (!$this->isNeedSerialNumberIn($serviceName)) {
@@ -51,13 +66,17 @@ class DockerComposeBuilder
             }
         }
         foreach ($this->build['services'] as $serviceKey => $service) {
+            if (str_contains($serviceKey, 'mysql_node')) {
+                $this->build['volumes'][$serviceKey] = [
+                    'driver' => 'local',
+                ];
+            }
             if (!str_contains($serviceKey, 'php_') || str_contains($serviceKey, 'humanzepola')) {
                 continue;
             }
 
-            $volumes = [
-                $service['volumes'][0]
-            ];
+            $volumes = [];
+            $this->build['services']['nginx_build']['depends_on'][] = $serviceKey;
 
             foreach ($nodes as $nodeNumber => $node) {
                 unset($nodes[$nodeNumber]);
@@ -66,7 +85,7 @@ class DockerComposeBuilder
                 $volumes[] = str_replace(
                     str_replace('php_', '', $serviceKey),
                     "node_{$nodeId}",
-                    $service['volumes'][1]);
+                    $service['volumes'][0]);
 
                 $this->putNodeToNginxConf($serviceKey, $nodeId);
                 $this->buildNodeDir($nodeId);
@@ -79,13 +98,6 @@ class DockerComposeBuilder
                 }
             }
         }
-        $this->compactNginxPorts();
-
-        dd($this->build);
-
-        yaml_emit_file($this->paths['build'], $this->build);
-
-        echo file_get_contents($this->paths['build']);
     }
 
     protected function refreshNginxConf(): void
@@ -110,13 +122,13 @@ class DockerComposeBuilder
     {
         $expose = max(array_map(function ($port) {
             return (int)$port;
-        }, $this->build['services']['nginx']['ports']));
+        }, $this->build['services']['nginx_build']['ports']));
         $configOfNode = file_get_contents($this->paths['nginx_config_sample_node']);
         $configOfServer = file_get_contents($this->paths['nginx_config']);
         $toReplace = [
             'location_name' => $serviceKey,
             'listen_port' => ++$expose,
-            'root_path' => $this->paths['nodes']
+            'root_path' => $this->paths['container_nodes']
                 . $this->paths['node_prefix']
                 . $nodeNumber
                 . $this->paths['node_root'],
@@ -126,19 +138,19 @@ class DockerComposeBuilder
             $configOfNode = str_replace("{{ {$directive} }}", $value, $configOfNode);
         }
 
-        $this->build['services']['nginx']['ports'][] = $expose . ':' . $expose;
+        $this->build['services']['nginx_build']['ports'][] = $expose . ':' . $expose;
         file_put_contents(
             $this->paths['nginx_config'],
-            substr($configOfServer,0,-2) . $configOfNode . '}' . PHP_EOL);
+            substr($configOfServer, 0, -2) . $configOfNode . '}' . PHP_EOL);
     }
 
     protected function compactNginxPorts(): void
     {
-        $portFirst = (int)$this->build['services']['nginx']['ports'][0];
-        $portLast = (int)$this->build['services']['nginx']['ports'][0]
-            + count($this->build['services']['nginx']['ports'])
+        $portFirst = (int)$this->build['services']['nginx_build']['ports'][0];
+        $portLast = (int)$this->build['services']['nginx_build']['ports'][0]
+            + count($this->build['services']['nginx_build']['ports'])
             - 1;
-        $this->build['services']['nginx']['ports'] = [
+        $this->build['services']['nginx_build']['ports'] = [
             "{$portFirst}-{$portLast}:{$portFirst}-{$portLast}"
         ];
     }
@@ -185,6 +197,9 @@ class DockerComposeBuilder
 
     protected function identifyServiceValue(string $value, int $id): string
     {
+        if (str_contains($value, 'node_sample')) {
+            return $value;
+        }
         if ($this->isNeedSerialNumberIn($value)) {
             preg_match('/node_/', $value, $matches);
 

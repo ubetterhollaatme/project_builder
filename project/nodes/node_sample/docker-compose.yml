@@ -4,8 +4,8 @@ services:
     nginx:
         container_name: nginx
         build:
-            context: ../../../docker/node
-            dockerfile: docker/nginx/Dockerfile
+            context: ./nodes/node_/docker/nginx
+            dockerfile: Dockerfile
         ports:
             - "80:80"
         volumes:
@@ -24,10 +24,9 @@ services:
     php_node_:
         container_name: php_node_
         build:
-            context: ../../../docker/node
-            dockerfile: docker/php/node/Dockerfile
+            context: ./nodes/node_/docker/php/node
+            dockerfile: Dockerfile
         volumes:
-            - ./docker/php/node/php.ini:/usr/local/etc/php/php.ini
             - ./nodes/node_:/var/www/html/nodes/node_:z
         depends_on:
             mysql_node_:

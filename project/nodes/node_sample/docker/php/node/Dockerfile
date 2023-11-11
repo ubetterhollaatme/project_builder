@@ -1,6 +1,8 @@
 FROM php:8.1-fpm
 
 COPY php.ini /usr/local/etc/php/php.ini
+COPY entrypoint.sh /entrypoint.sh
+COPY ./../../.. /var/www/html
 
 RUN apt-get update && apt-get install -y libcurl4-gnutls-dev git zip \
 	&& docker-php-ext-install curl bcmath sockets pdo_mysql \
@@ -15,9 +17,6 @@ RUN curl --silent --show-error https://getcomposer.org/installer | php \
 WORKDIR /var/www/html
 
 RUN mkdir -p /home/composer && chmod 777 /home/composer
-
-COPY entrypoint.sh /entrypoint.sh
-
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]

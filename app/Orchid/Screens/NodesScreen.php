@@ -149,7 +149,7 @@ class NodesScreen extends Screen
     public function generateNodes(): void
     {
         Node::factory()
-            ->count(20)
+            ->count(5)
             ->make()
             ->each(fn ($node) => $node->save());
 

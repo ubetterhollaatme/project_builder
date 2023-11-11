@@ -1,8 +1,8 @@
 version: '3.7'
 
 services:
-    nginx:
-        container_name: nginx
+    nginx_build:
+        container_name: nginx_build
         build:
             dockerfile: ./docker/nginx/Dockerfile
         ports:
@@ -19,15 +19,15 @@ services:
     php_humanzepola:
         container_name: php_humanzepola
         build:
-            dockerfile: ./humanzepola/docker/php/Dockerfile
+            context: ./humanzepola/docker/php
+            dockerfile: Dockerfile
         volumes:
-            - ./humanzepola/docker/php/php.ini:/usr/local/etc/php/php.ini
             - ./humanzepola:/var/www/html:z
         depends_on:
             mysql_humanzepola:
                 condition: service_healthy
-            rabbitmq:
-                condition: service_healthy
+#            rabbitmq:
+#                condition: service_healthy
         networks:
             - project
 
@@ -51,29 +51,29 @@ services:
             retries: 3
             timeout: 5s
 
-    rabbitmq:
-        container_name: rabbitmq
-        build:
-            dockerfile: ./docker/rabbitmq/Dockerfile
-        ports:
-            - "15672:15672"
-            - "5672:5672"
-        healthcheck:
-            test: [ "CMD", "curl", "-f", "http://localhost:15672" ]
-            interval: 30s
-            timeout: 10s
-            retries: 5
-        volumes:
-            - rabbitmq-data:/var/lib/rabbitmq
-        networks:
-            - project
+#    rabbitmq:
+#        container_name: rabbitmq
+#        build:
+#            dockerfile: ./docker/rabbitmq/Dockerfile
+#        ports:
+#            - "15672:15672"
+#            - "5672:5672"
+#        healthcheck:
+#            test: [ "CMD", "curl", "-f", "http://localhost:15672" ]
+#            interval: 30s
+#            timeout: 10s
+#            retries: 5
+#        volumes:
+#            - rabbitmq-data:/var/lib/rabbitmq
+#        networks:
+#            - project
 
 networks:
     project:
         driver: bridge
 
 volumes:
-    rabbitmq-data:
-        driver: local
+#    rabbitmq-data:
+#        driver: local
     mysql_humanzepola:
         driver: local

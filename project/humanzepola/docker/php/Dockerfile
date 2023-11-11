@@ -1,6 +1,6 @@
 FROM php:8.1-fpm
 
-COPY ./docker/php/humanzepola/php.ini /usr/local/etc/php/php.ini
+COPY php.ini /usr/local/etc/php/php.ini
 
 RUN apt-get update && apt-get install -y libcurl4-gnutls-dev git zip \
 	&& docker-php-ext-install curl bcmath sockets pdo_mysql \
@@ -16,7 +16,7 @@ WORKDIR /var/www/html/humanzepola3000_service
 
 RUN mkdir -p /home/composer && chmod 777 /home/composer
 
-COPY ./docker/php/humanzepola/entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
 

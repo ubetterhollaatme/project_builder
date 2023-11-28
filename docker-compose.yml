@@ -1,8 +1,8 @@
 version: '3.7'
 
 services:
-    nginx:
-        container_name: nginx
+    nginx_builder:
+        container_name: nginx_builder
         build:
             context: .
             dockerfile: docker/nginx/Dockerfile
@@ -14,7 +14,7 @@ services:
         depends_on:
             - php_builder
         networks:
-            - project
+            - project_builder
         deploy:
             resources:
                 limits:
@@ -33,7 +33,7 @@ services:
             mysql_builder:
                 condition: service_healthy
         networks:
-            - project
+            - project_builder
         deploy:
             resources:
                 limits:
@@ -52,7 +52,7 @@ services:
             - 'mysql_builder:/var/lib/mysql'
             - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
         networks:
-            - project
+            - project_builder
         healthcheck:
             test:
                 - CMD
@@ -68,7 +68,7 @@ services:
                     memory: 512M
 
 networks:
-    project:
+    project_builder:
         driver: bridge
 
 volumes:

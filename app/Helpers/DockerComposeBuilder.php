@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\Node;
+use Faker\Factory;
 use FilesystemIterator;
 use Illuminate\Filesystem\Filesystem;
 use JetBrains\PhpStorm\NoReturn;
@@ -32,7 +33,8 @@ class DockerComposeBuilder
             'nginx_config_sample_node' => "{$this->paths['project']}/nodes/node_sample/docker/nginx/server.sample.conf",
             'node_root' => '/public',
             'node_prefix' => '/node_',
-            'db_config' => '/docker/provision/mysql/init/01-databases.sql'
+            'db_config' => '/docker/provision/mysql/init/01-databases.sql',
+            'env_example' => '/.env.example',
         ]);
     }
 
@@ -61,16 +63,10 @@ class DockerComposeBuilder
                     continue;
                 }
 
-                $this->build['services']["{$serviceName}{$i}"] = $this->identifyServiceKeyRecursive($service, $i);
+                $this->build['services']["{$serviceName}{$i}"] = $this->identifyServiceRecursive($service, $i);
             }
         }
         foreach ($this->build['services'] as $serviceKey => $service) {
-            if (str_contains($serviceKey, 'mysql_node')) {
-                $this->setNodeDBConfig($serviceKey);
-                $this->build['volumes'][$serviceKey] = [
-                    'driver' => 'local',
-                ];
-            }
             if (!str_contains($serviceKey, 'php_') || str_contains($serviceKey, 'humanzepola')) {
                 continue;
             }
@@ -98,25 +94,56 @@ class DockerComposeBuilder
                 }
             }
         }
+
+        $nodes = Node::all();
+
+        foreach ($this->build['services'] as $serviceKey => $service) {
+            if (str_contains($serviceKey, 'mysql_node')) {
+                foreach ($nodes as $nodeNumber => $node) {
+                    $this->setNodeDBConfigs($serviceKey, $nodeNumber + 1);
+                }
+                $this->build['volumes'][$serviceKey] = [
+                    'driver' => 'local',
+                ];
+            }
+        }
     }
 
-    protected function setNodeDBConfig(string $serviceName): void
+    protected function setNodeDBConfigs(string $serviceKey, int $nodeNumber): void
     {
+        $dbname = "db_node_{$nodeNumber}";
+        $dbpass = Factory::create()->password();
+        $params = [
+            'to_replace' => [
+                'db_host' => $serviceKey,
+                'db_name' => $dbname,
+                'db_user' => $dbname,
+                'db_pass' => $dbpass,
+            ],
+        ];
         $nodePath = $this->paths['nodes']
             . $this->paths['node_prefix']
             . $nodeNumber;
-        $configPath = $nodePath . $this->paths['db_config'];
-        $config = file_get_contents($configPath);
-        $toReplace = [
-            'db_host' => $serviceName,
-            'db_name' => 'service_db',
-            'db_user' => 'service_user',
-            'db_pass' => 'password',
-        ];
+        $dbConfigPath = $nodePath . $this->paths['db_config'];
+        $dbConfig = file_get_contents($dbConfigPath);
+        $params['config_path'] = $dbConfigPath;
+        $params['config'] = $dbConfig;
 
-        $config = $this->replaceDirectives($config, $toReplace);
+        $this->setNodeDBConfig($params);
 
-        file_put_contents($configPath, $config);
+        $laravelConfigPath = $nodePath . $this->paths['env_example'];
+        $laravelConfig = file_get_contents($laravelConfigPath);
+        $params['config_path'] = $laravelConfigPath;
+        $params['config'] = $laravelConfig;
+
+        $this->setNodeDBConfig($params);
+    }
+
+    protected function setNodeDBConfig(array $params): void
+    {
+        file_put_contents(
+            $params['config_path'],
+            $this->replaceDirectives($params['config'], $params['to_replace']));
     }
 
     protected function refreshNginxConf(): void
@@ -206,7 +233,7 @@ class DockerComposeBuilder
         }
     }
 
-    protected function identifyServiceKeyRecursive(array $service, int $id): array
+    protected function identifyServiceRecursive(array $service, int $id): array
     {
         $identifiedService = [];
 
@@ -214,7 +241,7 @@ class DockerComposeBuilder
             $key = $this->isNeedSerialNumberIn($attribute) ? "{$attribute}{$id}" : $attribute;
             $identifiedService[$key] =
                 is_array($value)
-                    ? $this->identifyServiceKeyRecursive($value, $id)
+                    ? $this->identifyServiceRecursive($value, $id)
                     : $this->identifyServiceValue($value, $id);
         }
 

@@ -67,7 +67,7 @@ class BuilderScreen extends Screen
                         ->help('Enter how much nodes do you want to place on each server'),
                 ])
             ])
-                ->applyButton('Add')
+                ->applyButton('Build')
                 ->closeButton('Close')
         ];
     }

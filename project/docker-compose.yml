@@ -15,6 +15,7 @@ services:
     - php_humanzepola
     - php_node_1
     - php_node_2
+    - php_node_3
     networks:
     - project
   php_humanzepola:
@@ -56,7 +57,6 @@ services:
     volumes:
     - ./nodes/node_1:/var/www/html/nodes/node_1:z
     - ./nodes/node_2:/var/www/html/nodes/node_2:z
-    - ./nodes/node_3:/var/www/html/nodes/node_3:z
     depends_on:
       mysql_node_1:
         condition: service_healthy
@@ -97,8 +97,8 @@ services:
       context: ./nodes/node_2/docker/php/node
       dockerfile: Dockerfile
     volumes:
+    - ./nodes/node_3:/var/www/html/nodes/node_3:z
     - ./nodes/node_4:/var/www/html/nodes/node_4:z
-    - ./nodes/node_5:/var/www/html/nodes/node_5:z
     depends_on:
       mysql_node_2:
         condition: service_healthy
@@ -133,6 +133,47 @@ services:
         limits:
           cpus: "0.5"
           memory: 512M
+  php_node_3:
+    container_name: php_node_3
+    build:
+      context: ./nodes/node_3/docker/php/node
+      dockerfile: Dockerfile
+    volumes:
+    - ./nodes/node_5:/var/www/html/nodes/node_5:z
+    depends_on:
+      mysql_node_3:
+        condition: service_healthy
+    networks:
+    - project
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+  mysql_node_3:
+    container_name: mysql_node_3
+    image: mysql/mysql-server:8.0
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - mysql_node_3:/var/lib/mysql
+    - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - project
+    healthcheck:
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -proot
+      retries: "3"
+      timeout: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
 networks:
   project:
     driver: bridge
@@ -142,5 +183,7 @@ volumes:
   mysql_node_1:
     driver: local
   mysql_node_2:
+    driver: local
+  mysql_node_3:
     driver: local
 ...

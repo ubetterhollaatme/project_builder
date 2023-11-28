@@ -5,10 +5,8 @@ namespace App\Helpers;
 use App\Models\Node;
 use FilesystemIterator;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Storage;
 use JetBrains\PhpStorm\NoReturn;
 use RecursiveDirectoryIterator;
-use function PHPUnit\Framework\directoryExists;
 
 class DockerComposeBuilder
 {
@@ -34,6 +32,7 @@ class DockerComposeBuilder
             'nginx_config_sample_node' => "{$this->paths['project']}/nodes/node_sample/docker/nginx/server.sample.conf",
             'node_root' => '/public',
             'node_prefix' => '/node_',
+            'db_config' => '/docker/provision/mysql/init/01-databases.sql'
         ]);
     }
 
@@ -67,6 +66,7 @@ class DockerComposeBuilder
         }
         foreach ($this->build['services'] as $serviceKey => $service) {
             if (str_contains($serviceKey, 'mysql_node')) {
+                $this->setNodeDBConfig($serviceKey);
                 $this->build['volumes'][$serviceKey] = [
                     'driver' => 'local',
                 ];
@@ -91,13 +91,32 @@ class DockerComposeBuilder
                 $this->buildNodeDir($nodeId);
 
                 if ($nodeId % $this->config['nodes_per_server'] === 0
-                    || !count($nodes)) {
+                || !count($nodes)) {
                     $service['volumes'] = $volumes;
                     $this->build['services'][$serviceKey] = $service;
                     continue(2);
                 }
             }
         }
+    }
+
+    protected function setNodeDBConfig(string $serviceName): void
+    {
+        $nodePath = $this->paths['nodes']
+            . $this->paths['node_prefix']
+            . $nodeNumber;
+        $configPath = $nodePath . $this->paths['db_config'];
+        $config = file_get_contents($configPath);
+        $toReplace = [
+            'db_host' => $serviceName,
+            'db_name' => 'service_db',
+            'db_user' => 'service_user',
+            'db_pass' => 'password',
+        ];
+
+        $config = $this->replaceDirectives($config, $toReplace);
+
+        file_put_contents($configPath, $config);
     }
 
     protected function refreshNginxConf(): void
@@ -134,14 +153,21 @@ class DockerComposeBuilder
                 . $this->paths['node_root'],
         ];
 
-        foreach ($toReplace as $directive => $value) {
-            $configOfNode = str_replace("{{ {$directive} }}", $value, $configOfNode);
-        }
+        $configOfNode = $this->replaceDirectives($configOfNode, $toReplace);
 
         $this->build['services']['nginx_build']['ports'][] = $expose . ':' . $expose;
         file_put_contents(
             $this->paths['nginx_config'],
             substr($configOfServer, 0, -2) . $configOfNode . '}' . PHP_EOL);
+    }
+
+    protected function replaceDirectives(string $str, array $toReplace): string
+    {
+        foreach ($toReplace as $directive => $value) {
+            $str = str_replace("{{ {$directive} }}", $value, $str);
+        }
+
+        return $str;
     }
 
     protected function compactNginxPorts(): void

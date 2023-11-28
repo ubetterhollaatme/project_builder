@@ -1,6 +1,4 @@
--- create databases
-CREATE DATABASE IF NOT EXISTS `service_db`;
+CREATE DATABASE IF NOT EXISTS `{{ db_name }}`;
 
--- create root user and grant rights
-CREATE USER 'service_user'@'%' IDENTIFIED BY 'password';
-GRANT ALL PRIVILEGES ON service_db.* TO 'service_user'@'%';
+CREATE USER '{{ db_user }}'@'%' IDENTIFIED BY '{{ db_pass }}';
+GRANT ALL PRIVILEGES ON {{ db_name }}.* TO '{{ db_user }}'@'%';

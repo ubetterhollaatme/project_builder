@@ -48,7 +48,7 @@ class DockerComposeBuilder
 
         yaml_emit_file($this->paths['build'], $this->build);
 
-        dd($this->build);
+//        dd($this->build);
     }
 
     protected function prepareSerialServices(): void

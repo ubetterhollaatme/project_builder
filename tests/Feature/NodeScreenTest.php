@@ -36,9 +36,7 @@ class NodeScreenTest extends TestCase
             ])
             ->assertStatus(200);
 
-        $node = Node::where('email', '=', $email)->first();
-
-        $this->assertNotNull($node);
+        $this->assertNotNull(Node::where('email', '=', $email)->first());
     }
 
     /**
@@ -61,9 +59,7 @@ class NodeScreenTest extends TestCase
             ])
             ->assertStatus(200);
 
-        $node = Node::where('email', '=', $email)->first();
-
-        $this->assertNull($node);
+        $this->assertNull(Node::where('email', '=', $email)->first());
     }
 
     /**

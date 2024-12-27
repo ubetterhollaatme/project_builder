@@ -51,29 +51,29 @@ services:
             retries: 3
             timeout: 5s
 
-#    rabbitmq:
-#        container_name: rabbitmq
-#        build:
-#            dockerfile: ./docker/rabbitmq/Dockerfile
-#        ports:
-#            - "15672:15672"
-#            - "5672:5672"
-#        healthcheck:
-#            test: [ "CMD", "curl", "-f", "http://localhost:15672" ]
-#            interval: 30s
-#            timeout: 10s
-#            retries: 5
-#        volumes:
-#            - rabbitmq-data:/var/lib/rabbitmq
-#        networks:
-#            - project
+    rabbitmq:
+        container_name: rabbitmq
+        build:
+            dockerfile: ./docker/rabbitmq/Dockerfile
+        ports:
+            - "15672:15672"
+            - "5672:5672"
+        healthcheck:
+            test: [ "CMD", "curl", "-f", "http://localhost:15672" ]
+            interval: 30s
+            timeout: 10s
+            retries: 5
+        volumes:
+            - rabbitmq-data:/var/lib/rabbitmq
+        networks:
+            - project
 
 networks:
     project:
         driver: bridge
 
 volumes:
-#    rabbitmq-data:
-#        driver: local
+    rabbitmq-data:
+        driver: local
     mysql_humanzepola:
         driver: local

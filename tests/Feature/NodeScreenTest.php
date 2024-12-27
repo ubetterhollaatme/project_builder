@@ -2,8 +2,7 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Models\Node;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -11,7 +10,6 @@ use Orchid\Support\Testing\DynamicTestScreen;
 use Orchid\Support\Testing\ScreenTesting;
 use Tests\CreatesApplication;
 use Tests\TestCase;
-use function onlyDigits;
 
 class NodeScreenTest extends TestCase
 {
@@ -36,11 +34,11 @@ class NodeScreenTest extends TestCase
                 'email' => $email,
                 'phone' => $phone,
             ])
-            ->assertStatus(200)
-            ->assertSeeText($name)
-            ->assertSeeText($desc)
-            ->assertSeeText($email)
-            ->assertSeeText(onlyDigits($phone));
+            ->assertStatus(200);
+
+        $node = Node::where('email', '=', $email)->first();
+
+        $this->assertNotNull($node);
     }
 
     /**
@@ -61,11 +59,11 @@ class NodeScreenTest extends TestCase
                 'email' => $email,
                 'phone' => $phone,
             ])
-            ->assertStatus(200)
-            ->assertDontSeeText($name)
-            ->assertDontSeeText($desc)
-            ->assertDontSeeText($email)
-            ->assertDontSeeText(onlyDigits($phone));
+            ->assertStatus(200);
+
+        $node = Node::where('email', '=', $email)->first();
+
+        $this->assertNull($node);
     }
 
     /**
@@ -90,12 +88,15 @@ class NodeScreenTest extends TestCase
      */
     public function admin_can_generate_nodes()
     {
+        Node::truncate();
+
         $this
             ->getNodeScreen()
             ->actingAs(User::factory()->admin()->create())
             ->method('generateNodes')
-            ->assertStatus(200)
-            ->assertSeeText('Configure columns');
+            ->assertStatus(200);
+
+        $this->assertNotEmpty(Node::all());
     }
 
     /**
@@ -103,11 +104,14 @@ class NodeScreenTest extends TestCase
      */
     public function guest_can_not_generate_nodes()
     {
+        Node::truncate();
+
         $this
             ->getNodeScreen()
             ->method('generateNodes')
-            ->assertStatus(200)
-            ->assertDontSeeText('Configure columns');
+            ->assertStatus(200);
+
+        $this->assertEmpty(Node::all());
     }
 
     /**
@@ -127,12 +131,15 @@ class NodeScreenTest extends TestCase
      */
     public function admin_can_clear_nodes()
     {
+        $this->generateNodes();
+
         $this
             ->getNodeScreen()
             ->actingAs(User::factory()->admin()->create())
             ->method('clearNodes')
-            ->assertStatus(200)
-            ->assertSeeText('There are no objects currently displayed');
+            ->assertStatus(200);
+
+        $this->assertEmpty(Node::all());
     }
 
     /**
@@ -140,11 +147,14 @@ class NodeScreenTest extends TestCase
      */
     public function guest_can_not_clear_nodes()
     {
+        $this->generateNodes();
+
         $this
             ->getNodeScreen()
             ->method('clearNodes')
-            ->assertStatus(200)
-            ->assertDontSeeText('There are no objects currently displayed');
+            ->assertStatus(200);
+
+        $this->assertNotEmpty(Node::all());
     }
 
     /**
@@ -162,5 +172,15 @@ class NodeScreenTest extends TestCase
     private function getNodeScreen(): DynamicTestScreen
     {
         return $this->screen('builder.nodes');
+    }
+
+    private function generateNodes(): void
+    {
+        Node::factory()
+            ->count(5)
+            ->make()
+            ->each(fn ($node) => $node->save());
+
+        $this->assertNotEmpty(Node::all());
     }
 }

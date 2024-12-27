@@ -24,7 +24,7 @@ class NodeController extends Controller
     {
         $request->validate([
             'name' => 'required|min:3',
-            'desc' => 'required|min:5',
+            'desc' => 'required|min:4',
             'email' => 'required|unique:nodes|email',
             'phone' => 'required',
         ]);
